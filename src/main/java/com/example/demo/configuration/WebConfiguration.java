@@ -22,7 +22,7 @@ public class WebConfiguration {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        //config.setAllowCredentials(true);
+        config.setAllowCredentials(true);
       //  config.addAllowedOrigin("http://localhost:3000");
 	 config.addAllowedOrigin("https://user-management-system-frontend-iota.vercel.app");
         config.setAllowedHeaders(Arrays.asList(
