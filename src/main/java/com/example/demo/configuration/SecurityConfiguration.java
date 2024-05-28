@@ -15,33 +15,36 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-	@Autowired
-	private UserAuthenticationProvider userAuthenticationProvider;
-	
-	@Autowired
-	private UserAuthenticationEntryPoint userAuthenticationEntryPoint;
-	
-//	public SecurityConfiguration(UserAuthenticationProvider userAuthenticationProvider,
-//            UserAuthenticationEntryPoint userAuthenticationEntryPoint) {
-//        this.userAuthenticationProvider = userAuthenticationProvider;
-//        this.userAuthenticationEntryPoint = userAuthenticationEntryPoint;
-//    }
-	
-	@SuppressWarnings("removal")
-	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-		http
-		  .exceptionHandling().authenticationEntryPoint(userAuthenticationEntryPoint)
-		  .and()
-		  .addFilterBefore(new JwtAuthFilter(userAuthenticationProvider), BasicAuthenticationFilter.class)
-          .csrf().disable()
-		  .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-		  .and()
-		  .authorizeHttpRequests((requests)-> requests
-				  .requestMatchers("/login","/register").permitAll()
-				  .anyRequest().authenticated()
-				  
-				  );
+    @Autowired
+    private UserAuthenticationProvider userAuthenticationProvider;
+    
+    @Autowired
+    private UserAuthenticationEntryPoint userAuthenticationEntryPoint;
+
+    @SuppressWarnings("removal")
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .exceptionHandling().authenticationEntryPoint(userAuthenticationEntryPoint)
+            .and()
+            .addFilterBefore(new JwtAuthFilter(userAuthenticationProvider), BasicAuthenticationFilter.class)
+            .csrf().disable()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .authorizeHttpRequests((requests) -> requests
+                .requestMatchers("/login", "/register").permitAll()
+                .anyRequest().authenticated()
+            );
+        
+        return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}
+
 		  
 		return http.build();
 	}
