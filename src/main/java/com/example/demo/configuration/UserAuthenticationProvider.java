@@ -51,3 +51,4 @@ public class UserAuthenticationProvider {
         return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
     }
 }
+
