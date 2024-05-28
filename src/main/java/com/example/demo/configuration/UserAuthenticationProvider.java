@@ -20,44 +20,34 @@ import jakarta.annotation.PostConstruct;
 @Component
 public class UserAuthenticationProvider {
 
-	@Value("${security.jwt.token.secret-key:secret-value}")
-	private String secretKey;
-	
-	@Autowired
-	private UserService userService;
+    @Value("${security.jwt.token.secret-key:secret-value}")
+    private String secretKey;
+    
+    @Autowired
+    private UserService userService;
 
-	
-	
-	
-	//shouldn't allow default token to be stored in jvm
-	@PostConstruct
-	protected void init() {
-		secretKey=Base64.getEncoder().encodeToString(secretKey.getBytes());
-	}
-	
-	
-	//createToken
-	public String createToken(String email) {
-		Date now=new Date();
-		Date validity=new Date(now.getTime()+3600000);
-		Algorithm algoritham=Algorithm.HMAC256(secretKey);
-		
-		return JWT.create()
-				.withIssuer(email)
-				.withIssuedAt(now)
-				.withExpiresAt(validity)
-				.sign(algoritham);
-		
-	}
-	
-	//validateToken
-	public Authentication validateToken(String token) {
-		JWTVerifier verifier=JWT.require(Algorithm.HMAC256(secretKey)).build();
-		DecodedJWT decoded=verifier.verify(token);
-		User user=userService.findByEmail(decoded.getSubject());
-		 
-		return new UsernamePasswordAuthenticationToken(user,null,Collections.emptyList());
-				
-				
-	}
+    @PostConstruct
+    protected void init() {
+        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+    }
+
+    public String createToken(String email) {
+        Date now = new Date();
+        Date validity = new Date(now.getTime() + 3600000);
+        Algorithm algorithm = Algorithm.HMAC256(secretKey);
+
+        return JWT.create()
+            .withSubject(email)
+            .withIssuedAt(now)
+            .withExpiresAt(validity)
+            .sign(algorithm);
+    }
+
+    public Authentication validateToken(String token) {
+        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secretKey)).build();
+        DecodedJWT decoded = verifier.verify(token);
+        User user = userService.findByEmail(decoded.getSubject());
+        
+        return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
+    }
 }
