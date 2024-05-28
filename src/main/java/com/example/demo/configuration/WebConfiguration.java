@@ -23,8 +23,8 @@ public class WebConfiguration {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         //config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:3000");
-	// config.addAllowedOrigin("https://career-flow-froentend.vercel.app");
+      //  config.addAllowedOrigin("http://localhost:3000");
+	 config.addAllowedOrigin("https://career-flow-froentend.vercel.app");
         config.setAllowedHeaders(Arrays.asList(
                 HttpHeaders.AUTHORIZATION,
                 HttpHeaders.CONTENT_TYPE,
