@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-@Configuration
+/* @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
 
@@ -43,5 +43,41 @@ public class SecurityConfiguration {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+}*/
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfiguration {
+
+    @Autowired
+    private UserAuthenticationProvider userAuthenticationProvider;
+
+    @Autowired
+    private UserAuthenticationEntryPoint userAuthenticationEntryPoint;
+
+    @SuppressWarnings("removal")
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .exceptionHandling().authenticationEntryPoint(userAuthenticationEntryPoint)
+            .and()
+            .addFilterBefore(new JwtAuthFilter(userAuthenticationProvider), BasicAuthenticationFilter.class)
+            .csrf().disable()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .authorizeHttpRequests((requests) -> requests
+                .antMatchers("/login").authenticated() // Authentication required for login
+                .antMatchers("/register").permitAll() // No authentication required for registration
+                .anyRequest().authenticated()
+            );
+
+        return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }
+
 
