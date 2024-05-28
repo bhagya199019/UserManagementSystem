@@ -22,7 +22,7 @@ public class WebConfiguration {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("https://user-management-system-frontend-iota.vercel.app");
+        config.addAllowedOrigin("https://user-management-system-frontend-tgk1.vercel.app");
         config.setAllowedHeaders(Arrays.asList(
                 HttpHeaders.AUTHORIZATION,
                 HttpHeaders.CONTENT_TYPE,
